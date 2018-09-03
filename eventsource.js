@@ -470,7 +470,7 @@ var EventSourcePolyfill = (function (global) {
             }, 0);
         }
 
-        onTimeout = () => {
+        onTimeout = funcion() {
             timeout = 0;
             if (currentState !== WAITING) {
                 onEvent("");
