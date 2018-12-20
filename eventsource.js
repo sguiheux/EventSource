@@ -148,25 +148,22 @@ var EventSourcePolyfill = (function (global) {
     }
 
     function EventSourcePolyfill (url, options) {
-        var url = url.toString();
+        url = url.toString();
+        if (!options) {
+            options = {};
+        }
 
-        var withCredentials = isCORSSupported && options != undefined && Boolean(options.withCredentials);
+        var withCredentials = isCORSSupported && Boolean(options.withCredentials);
         var initialRetry = getDuration(1000, 0);
         var heartbeatTimeout = getDuration(options.heartbeatTimeout || 45000, 0);
-        var checkActivity = true;
-        if (options && options.checkActivity != null) {
-            checkActivity = Boolean(options.checkActivity);
-        }
-        var connectionTimeout = 0;
-        if (options && options.connectionTimeout) {
-            connectionTimeout = options.connectionTimeout;
-        }
+        var checkActivity = !('checkActivity' in options) || Boolean(options.checkActivity);
+        var connectionTimeout = options.connectionTimeout || 0;
         var lastEventId = "";
-        var headers = (options && options.headers) || {};
+        var headers = options.headers || {};
         var that = this;
         var retry = initialRetry;
         var wasActivity = false;
-        var CurrentTransport = options != undefined && options.Transport != undefined ? options.Transport : Transport;
+        var CurrentTransport = options.Transport || Transport;
         var xhr = new CurrentTransport();
         var timeout = 0;
         var timeout0 = 0;
@@ -177,10 +174,7 @@ var EventSourcePolyfill = (function (global) {
         var lastEventIdBuffer = "";
         var eventTypeBuffer = "";
         var onTimeout = undefined;
-        var errorOnTimeout = true;
-        if (options && options.errorOnTimeout !== undefined && options.errorOnTimeout !== null) {
-            errorOnTimeout = options.errorOnTimeout;
-        }
+        var errorOnTimeout = !('errorOnTimeout' in options) || Boolean(options.errorOnTimeout);
 
         var state = FIELD_START;
         var field = "";
