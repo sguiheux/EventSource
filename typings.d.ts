@@ -27,4 +27,5 @@ interface EventSourceInit {
 
 interface OnMessageEvent {
     data: string;
+    lastEventId: string;
 }
